@@ -1,6 +1,7 @@
 mod test_utils;
 use test_utils::*;
 extern crate cder;
+use uuid::{uuid, Uuid};
 
 use anyhow::Result;
 use cder::{Dict, StructLoader};
@@ -185,30 +186,42 @@ fn test_struct_loader_load_orders() -> Result<()> {
         loader.load(&mapping)?;
 
         let order = loader.get("Order1")?;
-        assert_eq!(order.id, 1200);
-        assert_eq!(order.customer_id, 1);
-        assert_eq!(order.item_id, 102);
+        assert_eq!(order.id, uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1"));
+        assert_eq!(
+            order.customer_id,
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1")
+        );
+        assert_eq!(order.item_id, uuid!("67e55044-10b1-426f-9247-bb680e5fe0c2"));
         assert_eq!(order.quantity, 2);
         assert_eq!(order.purchased_at, parse_datetime("2021-03-01 15:15:44")?);
 
         let order = loader.get("Order2")?;
-        assert_eq!(order.id, 1201);
-        assert_eq!(order.customer_id, 2);
-        assert_eq!(order.item_id, 100);
+        assert_eq!(order.id, uuid!("67e55044-10b1-426f-9247-bb680e5fe0c2"));
+        assert_eq!(
+            order.customer_id,
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c2")
+        );
+        assert_eq!(order.item_id, uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1"));
         assert_eq!(order.quantity, 1);
         assert_eq!(order.purchased_at, parse_datetime("2021-03-02 07:51:20")?);
 
         let order = loader.get("Order3")?;
-        assert_eq!(order.id, 1202);
-        assert_eq!(order.customer_id, 1);
-        assert_eq!(order.item_id, 103);
+        assert_eq!(order.id, uuid!("67e55044-10b1-426f-9247-bb680e5fe0c3"));
+        assert_eq!(
+            order.customer_id,
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1")
+        );
+        assert_eq!(order.item_id, uuid!("67e55044-10b1-426f-9247-bb680e5fe0c3"));
         assert_eq!(order.quantity, 4);
         assert_eq!(order.purchased_at, parse_datetime("2021-03-10 10:10:33")?);
 
         let order = loader.get("Order4")?;
-        assert_eq!(order.id, 1203);
-        assert_eq!(order.customer_id, 3);
-        assert_eq!(order.item_id, 100);
+        assert_eq!(order.id, uuid!("67e55044-10b1-426f-9247-bb680e5fe0c4"));
+        assert_eq!(
+            order.customer_id,
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c3")
+        );
+        assert_eq!(order.item_id, uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1"));
         assert_eq!(order.quantity, 2);
         assert_eq!(order.purchased_at, parse_datetime("2021-03-11 11:55:44")?);
     }

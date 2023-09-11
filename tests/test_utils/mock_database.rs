@@ -6,11 +6,11 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
 // async insertion is done in random order, so records has to be sorted before testing
-pub fn sort_records_by_ids<T>(records: Vec<T>, ids: Vec<i64>) -> Vec<T> {
+pub fn sort_records_by_ids<T>(records: Vec<T>, ids: Vec<uuid::Uuid>) -> Vec<T> {
     let mut indexed_records = ids
         .iter()
         .zip(records.into_iter())
-        .collect::<Vec<(&i64, T)>>();
+        .collect::<Vec<(&uuid::Uuid, T)>>();
     indexed_records.sort_unstable_by_key(|(i, _)| *i);
     indexed_records
         .into_iter()
@@ -23,7 +23,7 @@ pub struct MockTable<T>
 where
     T: Clone,
 {
-    ids_by_name: Arc<Mutex<HashMap<String, i64>>>,
+    ids_by_name: Arc<Mutex<HashMap<String, uuid::Uuid>>>,
     records: Arc<Mutex<Vec<T>>>,
 }
 
@@ -33,7 +33,7 @@ impl<T> MockTable<T>
 where
     T: Clone,
 {
-    pub fn new(ids_by_name: Vec<(String, i64)>) -> Self {
+    pub fn new(ids_by_name: Vec<(String, uuid::Uuid)>) -> Self {
         let ids_by_name = HashMap::from_iter(ids_by_name.into_iter());
 
         MockTable {
@@ -49,7 +49,7 @@ where
 
 impl MockTable<Item> {
     // simply registers the record and returns pre-reistered `id` for testing purpose
-    pub async fn insert(&mut self, record: Item) -> Result<i64> {
+    pub async fn insert(&mut self, record: Item) -> Result<uuid::Uuid> {
         tokio::time::sleep(std::time::Duration::from_millis(10)).await;
 
         let ids_by_name = self.ids_by_name.lock().unwrap();
@@ -66,7 +66,7 @@ impl MockTable<Item> {
 
 impl MockTable<Customer> {
     // simply registers the record and returns pre-reistered `id` for testing purpose
-    pub async fn insert(&mut self, record: Customer) -> Result<i64> {
+    pub async fn insert(&mut self, record: Customer) -> Result<uuid::Uuid> {
         tokio::time::sleep(std::time::Duration::from_millis(10)).await;
 
         let ids_by_name = self.ids_by_name.lock().unwrap();
@@ -83,7 +83,7 @@ impl MockTable<Customer> {
 
 impl MockTable<Order> {
     // simply registers the record and returns pre-reistered `id` for testing purpose
-    pub async fn insert(&mut self, record: Order) -> Result<i64> {
+    pub async fn insert(&mut self, record: Order) -> Result<uuid::Uuid> {
         tokio::time::sleep(std::time::Duration::from_millis(10)).await;
 
         let ids_by_name = self.ids_by_name.lock().unwrap();

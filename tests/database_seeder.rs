@@ -1,6 +1,7 @@
 mod test_utils;
 use test_utils::*;
 extern crate cder;
+use uuid::{uuid, Uuid};
 
 use anyhow::Result;
 use cder::DatabaseSeeder;
@@ -18,10 +19,22 @@ fn test_database_seeder_new() {
 fn test_database_seeder_populate_items() -> Result<()> {
     let base_dir = get_test_base_dir();
     let mock_table = MockTable::<Item>::new(vec![
-        ("melon".to_string(), 1),
-        ("orange".to_string(), 2),
-        ("apple".to_string(), 3),
-        ("carrot".to_string(), 4),
+        (
+            "melon".to_string(),
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1"),
+        ),
+        (
+            "orange".to_string(),
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c2"),
+        ),
+        (
+            "apple".to_string(),
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c3"),
+        ),
+        (
+            "carrot".to_string(),
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c4"),
+        ),
     ]);
     let rt = Runtime::new().unwrap();
 
@@ -53,9 +66,18 @@ fn test_database_seeder_populate_items() -> Result<()> {
 fn test_database_seeder_populate_customers() -> Result<()> {
     let base_dir = get_test_base_dir();
     let mock_table = MockTable::<Customer>::new(vec![
-        ("Alice".to_string(), 1),
-        ("Bob".to_string(), 2),
-        ("Developer".to_string(), 3),
+        (
+            "Alice".to_string(),
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1"),
+        ),
+        (
+            "Bob".to_string(),
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c2"),
+        ),
+        (
+            "Developer".to_string(),
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c3"),
+        ),
     ]);
     let rt = Runtime::new().unwrap();
 
@@ -109,10 +131,22 @@ fn test_database_seeder_populate_orders() -> Result<()> {
         // when dependencies are missing
 
         let mock_orders_table = MockTable::<Order>::new(vec![
-            ("1200".to_string(), 1),
-            ("1201".to_string(), 2),
-            ("1202".to_string(), 3),
-            ("1203".to_string(), 4),
+            (
+                "1200".to_string(),
+                uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1"),
+            ),
+            (
+                "1201".to_string(),
+                uuid!("67e55044-10b1-426f-9247-bb680e5fe0c2"),
+            ),
+            (
+                "1202".to_string(),
+                uuid!("67e55044-10b1-426f-9247-bb680e5fe0c3"),
+            ),
+            (
+                "1203".to_string(),
+                uuid!("67e55044-10b1-426f-9247-bb680e5fe0c4"),
+            ),
         ]);
         let results = seeder.populate("orders.yml", |input: Order| {
             let mut mock_orders_table = mock_orders_table.clone();
@@ -125,19 +159,40 @@ fn test_database_seeder_populate_orders() -> Result<()> {
     {
         // when dependencies are provided
         let mock_items_table = MockTable::<Item>::new(vec![
-            ("melon".to_string(), 1),
-            ("orange".to_string(), 2),
-            ("apple".to_string(), 3),
-            ("carrot".to_string(), 4),
+            (
+                "melon".to_string(),
+                uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1"),
+            ),
+            (
+                "orange".to_string(),
+                uuid!("67e55044-10b1-426f-9247-bb680e5fe0c2"),
+            ),
+            (
+                "apple".to_string(),
+                uuid!("67e55044-10b1-426f-9247-bb680e5fe0c3"),
+            ),
+            (
+                "carrot".to_string(),
+                uuid!("67e55044-10b1-426f-9247-bb680e5fe0c4"),
+            ),
         ]);
         seeder.populate("items.yml", |input: Item| {
             let mut mock_items_table = mock_items_table.clone();
             rt.block_on(mock_items_table.insert(input))
         })?;
         let mock_customers_table = MockTable::<Customer>::new(vec![
-            ("Alice".to_string(), 1),
-            ("Bob".to_string(), 2),
-            ("Developer".to_string(), 3),
+            (
+                "Alice".to_string(),
+                uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1"),
+            ),
+            (
+                "Bob".to_string(),
+                uuid!("67e55044-10b1-426f-9247-bb680e5fe0c2"),
+            ),
+            (
+                "Developer".to_string(),
+                uuid!("67e55044-10b1-426f-9247-bb680e5fe0c3"),
+            ),
         ]);
         seeder.populate("customers.yml", |input: Customer| {
             let mut mock_customers_table = mock_customers_table.clone();
@@ -145,10 +200,22 @@ fn test_database_seeder_populate_orders() -> Result<()> {
         })?;
 
         let mock_orders_table = MockTable::<Order>::new(vec![
-            ("1200".to_string(), 1),
-            ("1201".to_string(), 2),
-            ("1202".to_string(), 3),
-            ("1203".to_string(), 4),
+            (
+                "1200".to_string(),
+                uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1"),
+            ),
+            (
+                "1201".to_string(),
+                uuid!("67e55044-10b1-426f-9247-bb680e5fe0c2"),
+            ),
+            (
+                "1202".to_string(),
+                uuid!("67e55044-10b1-426f-9247-bb680e5fe0c3"),
+            ),
+            (
+                "1203".to_string(),
+                uuid!("67e55044-10b1-426f-9247-bb680e5fe0c4"),
+            ),
         ]);
         let ids = seeder.populate("orders.yml", |input: Order| {
             let mut mock_orders_table = mock_orders_table.clone();
@@ -158,36 +225,60 @@ fn test_database_seeder_populate_orders() -> Result<()> {
         let persisted_records = mock_orders_table.get_records();
         let records = sort_records_by_ids(persisted_records, ids);
 
-        assert_eq!(records[0].id, 1200);
-        assert_eq!(records[0].customer_id, 1);
-        assert_eq!(records[0].item_id, 3);
+        assert_eq!(records[0].id, uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1"));
+        assert_eq!(
+            records[0].customer_id,
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1")
+        );
+        assert_eq!(
+            records[0].item_id,
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c3")
+        );
         assert_eq!(records[0].quantity, 2);
         assert_eq!(
             records[0].purchased_at,
             parse_datetime("2021-03-01 15:15:44")?
         );
 
-        assert_eq!(records[1].id, 1201);
-        assert_eq!(records[1].customer_id, 2);
-        assert_eq!(records[1].item_id, 1);
+        assert_eq!(records[1].id, uuid!("67e55044-10b1-426f-9247-bb680e5fe0c2"));
+        assert_eq!(
+            records[1].customer_id,
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c2")
+        );
+        assert_eq!(
+            records[1].item_id,
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1")
+        );
         assert_eq!(records[1].quantity, 1);
         assert_eq!(
             records[1].purchased_at,
             parse_datetime("2021-03-02 07:51:20")?
         );
 
-        assert_eq!(records[2].id, 1202);
-        assert_eq!(records[2].customer_id, 1);
-        assert_eq!(records[2].item_id, 4);
+        assert_eq!(records[2].id, uuid!("67e55044-10b1-426f-9247-bb680e5fe0c3"));
+        assert_eq!(
+            records[2].customer_id,
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1")
+        );
+        assert_eq!(
+            records[2].item_id,
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c4")
+        );
         assert_eq!(records[2].quantity, 4);
         assert_eq!(
             records[2].purchased_at,
             parse_datetime("2021-03-10 10:10:33")?
         );
 
-        assert_eq!(records[3].id, 1203);
-        assert_eq!(records[3].customer_id, 3);
-        assert_eq!(records[3].item_id, 1);
+        assert_eq!(records[3].id, uuid!("67e55044-10b1-426f-9247-bb680e5fe0c4"));
+        assert_eq!(
+            records[3].customer_id,
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c3")
+        );
+        assert_eq!(
+            records[3].item_id,
+            uuid!("67e55044-10b1-426f-9247-bb680e5fe0c1")
+        );
         assert_eq!(records[3].quantity, 2);
         assert_eq!(
             records[3].purchased_at,

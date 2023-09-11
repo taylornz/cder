@@ -1,6 +1,6 @@
 use chrono::NaiveDateTime;
 use serde::Deserialize;
-
+use uuid::Uuid;
 #[derive(Deserialize, Clone)]
 pub struct Item {
     pub name: String,
@@ -22,9 +22,9 @@ pub enum Plan {
 }
 #[derive(Deserialize, Clone)]
 pub struct Order {
-    pub id: i64,
-    pub customer_id: i64,
-    pub item_id: i64,
+    pub id: uuid::Uuid,
+    pub customer_id: uuid::Uuid,
+    pub item_id: uuid::Uuid,
     pub quantity: i64,
     pub purchased_at: NaiveDateTime,
 }

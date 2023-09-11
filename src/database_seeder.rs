@@ -2,6 +2,7 @@ use crate::{load_named_records, Dict};
 use anyhow::Result;
 use serde::de::DeserializeOwned;
 use std::future::Future;
+use uuid::Uuid;
 /// DatabaseSeeder persists data deserialized from specified file.
 /// Internally it keeps record label mapped against its id on insertion. The mapping can be reused
 /// later process to resolve embedded tags.
@@ -108,16 +109,16 @@ impl DatabaseSeeder {
     /// seeder
     ///     .populate("fixures/users.yml", |input| {
     ///         // this block can contain any non-async functions
-    ///         // but it has to return Result<i64> in the end
+    ///         // but it has to return Result<uuid::Uuid> in the end
     ///         User::insert(&input)
     ///     });
     ///
     ///     Ok(())
     /// }
     /// ```
-    pub fn populate<F, T>(&mut self, filename: &str, mut loader: F) -> Result<Vec<i64>>
+    pub fn populate<F, T>(&mut self, filename: &str, mut loader: F) -> Result<Vec<uuid::Uuid>>
     where
-        F: FnMut(T) -> Result<i64>,
+        F: FnMut(T) -> Result<uuid::Uuid>,
         T: DeserializeOwned,
     {
         let named_records = load_named_records::<T>(filename, &self.base_dir, &self.name_resolver)?;
@@ -172,9 +173,9 @@ impl DatabaseSeeder {
         &mut self,
         filename: &str,
         mut loader: F,
-    ) -> Result<Vec<i64>>
+    ) -> Result<Vec<uuid::Uuid>>
     where
-        Fut: Future<Output = Result<i64>>,
+        Fut: Future<Output = Result<uuid::Uuid>>,
         F: FnMut(T) -> Fut,
         T: DeserializeOwned,
     {
